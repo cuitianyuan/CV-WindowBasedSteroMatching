@@ -2,7 +2,7 @@
 Estimate dense stereo correspondence with window based methods
 
 ## Original image
-![output](input/pair1-R.png)
+![output](input/pair1-L.png)
 
 ## Stero matching: Implement the SSD based match algorithm that returns a disparity image
 ![output](output/ps3-1-b-2.png)
