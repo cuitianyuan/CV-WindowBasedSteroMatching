@@ -1,15 +1,7 @@
 import cv2
 import numpy as np
-#from matplotlib import pyplot as plt
-#plt.imshow(depth,'gray')
-
 
 def disparity_ssd(img1, img2, direction, w_size, dmax):
-#    img1 = l
-#    img2 = r
-#    direction = 0
-#    w_size = (5,5)
-#    dmax = 3
     """Returns a disparity map D(y, x) using the Sum of Squared Differences.
 
     Assuming img1 and img2 are the left (L) and right (R) images from the same scene. The disparity image contains
@@ -76,95 +68,7 @@ def disparity_ssd(img1, img2, direction, w_size, dmax):
                 d = sum_diff_sq_kernel.argmin()
                 depth[x, y] = d
                     
-    return depth.astype(int)     
-#
-#print depth[50,50]
-#print np.min(depth)
-#print np.max(depth)
-# 
-#print np.sum(depth)
-#
-#
-#
-### TEst result
-##rshift = np.roll(img2,2)
-##img1[50:52,50:52]
-##rshift[50:52,50:52]
-##diff = img1 - rshift
-##cv2.imwrite(os.path.join(output_dir, 'test.png'), normalize_and_scale(diff))
-#    #    Run a 2D correlation filter and the kernel defined above #  cv.filter2D(...)  
-#
-#
-#
-##AssertionError: Disparity map is incorrect. Input images are similar to pair0.
-##The output disparity map does not have a centered square with the expected size. 
-##Expected size: 10100. Student size: 17252. 
-##Max difference allowed: 1010. 
-##Testing parameters - w_size: (5, 5). dmax: 3. 
-##direction: 0
-#
-#
-#
-#def stereo_match(left_img, right_img, kernel, max_offset):
-#    # Load in both images, assumed to be RGBA 8bit per channel images
-#    left_img = l
-#    right_img = r
-#    kernel = 4
-#    max_offset = 3
-#    
-#    w, h = left_img.shape  # assume that both images are same size   
-#    
-#    # Depth (or disparity) map
-#    depth = np.zeros((w, h), np.uint8)
-#    depth.shape = h, w
-#       
-#    kernel_half = int(kernel / 2)    
-##    offset_adjust = 255 / max_offset  # this is used to map depth map output to 0-255 range
-#      
-#    for y in range(kernel_half, h - kernel_half):      
-##        print(".", end="", flush=True)  # let the user know that something is happening (slowly!)
-#        
-#        for x in range(kernel_half, w - kernel_half):
-#            best_offset = 0
-#            prev_ssd = 65534
-#            
-#            for offset in range(max_offset):               
-#                ssd = 0
-#                ssd_temp = 0                            
-#                
-#                # v and u are the x,y of our local window search, used to ensure a good 
-#                # match- going by the squared differences of two pixels alone is insufficient, 
-#                # we want to go by the squared differences of the neighbouring pixels too
-#                for v in range(-kernel_half, kernel_half):
-#                    for u in range(-kernel_half, kernel_half):
-#                        # iteratively sum the sum of squared differences value for this block
-#                        # left[] and right[] are arrays of uint8, so converting them to int saves
-#                        # potential overflow, and executes a lot faster 
-##                        print off_set, u, v,  left_img[y+v, x+u] ,  right_img[y+v, (x+u) - offset], left_img[y+v, x+u]  -  right_img[y+v, (x+u) - offset] 
-#                        ssd_temp =  left_img[y+v, x+u]  -  right_img[y+v, (x+u) - offset] 
-#                        ssd += ssd_temp * ssd_temp              
-#                
-#                # if this value is smaller than the previous ssd at this block
-#                # then it's theoretically a closer match. Store this value against
-#                # this block..
-#                if ssd < prev_ssd:
-#                    prev_ssd = ssd
-#                    best_offset = offset
-#                            
-#            # set depth output for this x,y location to the best match
-#            depth[y, x] = best_offset 
-#                                
-#    # Convert to PIL and save it
-#    return depth
-#
-#print depth[50,50]
-#print np.min(depth)
-#print np.max(depth)
-# 
-#np.sum(depth)
-# 7805
-# 
- 
+    return depth.astype(int)   
  
  
 def disparity_ncorr(img1, img2, direction, w_size, dmax):
@@ -194,11 +98,6 @@ def disparity_ncorr(img1, img2, direction, w_size, dmax):
     w, h = img1.shape 
     depth = np.zeros((w,h)) 
      
-     
-#    img1 = cv2.imread(os.path.join(input_dir, 'pair0-L.png'), 0)  / 255.
-#    img2 = cv2.imread(os.path.join(input_dir, 'pair0-R.png'), 0)  / 255.
-#    img1 = cv2.imread(os.path.join(input_dir, 'pair1-L.png'), 0) / 255.
-#    img2 = cv2.imread(os.path.join(input_dir, 'pair1-R.png'), 0)  / 255.
     left_img = img1.astype(np.float32)
     right_img = img2.astype(np.float32)
     
@@ -220,35 +119,11 @@ def disparity_ncorr(img1, img2, direction, w_size, dmax):
             for  x in reversed(range( w_size[1], w )):
                 kernel_l = left_img[(x-w_size[0]+1):(x+1), y:(y+w_size[1])]
                 kernel_r = right_img[(x-w_size[0]+1):(x+1), (y-dmax) :(y+w_size[1])]    
-#                 print kernel_l.shape, kernel_r.shape
                 sim = cv2.matchTemplate(kernel_l, kernel_r  ,  cv2.TM_CCOEFF_NORMED)   
                 min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(sim)
                 depth[x, y] = dmax - max_loc[0] 
-#                print min_val, max_val, min_loc, max_lo
-#
-#    if direction == 1 : 
-#        for y in reversed(range(0, h - w_size[0]-dmax)): #range(dmax, h - w_size[0]):
-#            for  x in reversed(range( w_size[1], w )):
-#                kernel_l = left_img[(x-w_size[0]+1):(x+1), y:(y+w_size[1])]
-#                kernel_r = right_img[(x-w_size[0]+1):(x+1), (y) :(y+w_size[1]+dmax)]    
-##                 print kernel_l.shape, kernel_r.shape
-#                sim = cv2.matchTemplate(kernel_l, kernel_r ,  cv2.TM_CCOEFF_NORMED)   
-#                min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(sim)
-##                print min_val, max_val, min_loc, max_loc
-#                depth[x, y] =  max_loc[0]
                                                                           
     return depth.astype(int)  
-                
-#        print depth[0,0]
-#        print depth[20,20]
-#        print depth[50,50]
-#        print depth[70,70]
-#        print depth[100,100]
-#        plt.imshow(depth,'gray')
-#        depth1 = depth
-#        plt.imshow(normalize_and_scale(depth ),'gray')
-#        plt.imshow(normalize_and_scale(depth1),'gray')
-#        plt.imshow(normalize_and_scale(depth0),'gray')
          
 def add_noise(img, sigma):
     """Returns a copy of the input image with gaussian noise added. The Gaussian noise mean must be zero.
@@ -261,8 +136,6 @@ def add_noise(img, sigma):
     Returns:
         numpy.array: output image with added noise of type float64. Return it without normalizing or clipping it.
     """
-    pass
-#img = img1
     r, c = img.shape
     im = np.zeros((r,c), np.float64)
     cv2.randn(im, (0) , (sigma) )
@@ -284,13 +157,4 @@ def increase_contrast(img, percent):
     img1 = np.copy(img)
     img1 = img.astype(np.float64)
     img1 = cv2.multiply(img1, np.array([1.0 + float(percent)/100]))  
-#    img normalize_and_scale(img)
     return img1
-#    plt.imshow(img1,'gray')
-#    plt.imshow(img,'gray')
-    
-    
-#newImage0 = (maxIntensity/phi)*(image/(maxIntensity/theta))**0.5
-#newImage0 = array(newImage0,dtype=uint8)
-#np.max(img)
-
