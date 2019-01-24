@@ -28,14 +28,8 @@ def part_1a():
     l = cv2.imread(os.path.join(input_dir, 'pair0-L.png'), 0) / 255.
     r = cv2.imread(os.path.join(input_dir, 'pair0-R.png'), 0) / 255.
 
-    w_size = (5, 5)  # You may have to try different values
-    dmax = 10  # You may have to try different values
-    
-#    d_l1 = disparity_ssd(l, r, 0, (4,4), 3)
-#    
-#    d_l2 = stereo_match(l, r, 4, 3)
-#    print np.max(d_l2)
-    
+    w_size = (5, 5)  
+    dmax = 10  
     
     d_l = disparity_ssd(l, r, 0, w_size, dmax)
     d_r = disparity_ssd(l, r, 1, w_size, dmax)
@@ -52,8 +46,8 @@ def part_1b():
     l = cv2.imread(os.path.join(input_dir, 'pair1-L.png'), 0) / 255.
     r = cv2.imread(os.path.join(input_dir, 'pair1-R.png'), 0) / 255.
 
-    w_size =  (10, 10)   # You may have to try different values
-    dmax = 100  # You may have to try different values
+    w_size =  (10, 10)  
+    dmax = 100  
     d_l = disparity_ssd(l, r, 0, w_size, dmax)
     d_r = disparity_ssd(l, r, 1, w_size, dmax)
 
@@ -76,12 +70,12 @@ def part_2a(get_disp=True):
     r_noisy = add_noise(r, sigma)
 
     # Select one or both noisy images and use SSD
-    image_l = l_noisy #None  # Replace None with either l or l_noisy
-    image_r = r #None  # Replace None with either r or r_noisy
+    image_l = l_noisy 
+    image_r = r
 
     if get_disp:
-        w_size = (10, 10)  # You may have to try different values
-        dmax = 100  # You may have to try different values
+        w_size = (10, 10) 
+        dmax = 100  
         d_l = disparity_ssd(image_l, image_r, 0, w_size, dmax)
         d_r = disparity_ssd(image_l, image_r, 1, w_size, dmax)
 
@@ -91,7 +85,7 @@ def part_2a(get_disp=True):
         cv2.imwrite(os.path.join(output_dir, 'ps3-2-a-1.png'), d_l)
         cv2.imwrite(os.path.join(output_dir, 'ps3-2-a-2.png'), d_r)
 
-    return image_l, image_r  # These will be used in 3b
+    return image_l, image_r 
 
 
 def part_2b(get_disp=True):
@@ -135,10 +129,6 @@ def part_3a():
     d_l = normalize_and_scale(d_l)
     d_r = normalize_and_scale(d_r)
 
-#from matplotlib import pyplot as plt
-#    plt.imshow(d_l,'gray')
-#    plt.imshow(d_r,'gray')
-
     cv2.imwrite(os.path.join(output_dir, 'ps3-3-a-1.png'), d_l)
     cv2.imwrite(os.path.join(output_dir, 'ps3-3-a-2.png'), d_r)
 
@@ -154,7 +144,7 @@ def part_3b_1():
 
     d_l = normalize_and_scale(d_l)
     d_r = normalize_and_scale(d_r)
-#plt.imshow(d_l,'gray')
+
     cv2.imwrite(os.path.join(output_dir, 'ps3-3-b-1.png'), d_l)
     cv2.imwrite(os.path.join(output_dir, 'ps3-3-b-2.png'), d_r)
 
@@ -196,26 +186,15 @@ def part_4():
     kernel_sharpen_1 = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]])
     lsp = cv2.filter2D(l, -1, kernel_sharpen_1)
     rsp = cv2.filter2D(r, -1, kernel_sharpen_1)
-#    l_g = cv2.imread(os.path.join(input_dir, 'pair2-D_L.png'), 0) / 255.
    
-    w_size = (5,5)  # You may have to try different values
-    dmax = 100  # You may have to try different values
-#    d_l = disparity_ssd(ls, rs, 0, w_size, dmax)
-#  
-#    d_l = disparity_ssd(l, r , 0, w_size, dmax)
+    w_size = (5,5)
+    dmax = 100  
     
     d_l = disparity_ssd(lsp, rsp, 0, w_size, dmax)
     d_r = disparity_ssd(lsp, rsp, 1, w_size, dmax)
 
     d_l = normalize_and_scale(d_l)
     d_r = normalize_and_scale(d_r)
-    
-    
-#    d_l = normalize_and_scale(d_l)
-#    plt.imshow( d_l,'gray')
-#    
-#    
-#    plt.imshow( ls,'gray')
 
     cv2.imwrite(os.path.join(output_dir, 'ps3-4-a-1.png'), d_l)
     cv2.imwrite(os.path.join(output_dir, 'ps3-4-a-2.png'), d_r)
